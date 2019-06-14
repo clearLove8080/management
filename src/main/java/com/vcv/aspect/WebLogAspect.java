@@ -26,7 +26,7 @@ public class WebLogAspect {
     private Map<Long, Map<String, List<Long>>> threadMap = new ConcurrentHashMap<>(200);
 
     //匹配com.jesper.controller包及其子包下的所有类的所有方法
-    @Pointcut("execution(* com.jesper.controller..*.*(..))")
+    @Pointcut("execution(* com.vcv.controller..*.*(..))")
     public void executeService(){
 
     }

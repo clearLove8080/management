@@ -29,19 +29,19 @@
         <div class="border-bottom" th:include="header :: headerTop"></div>
         <div class="row wrapper border-bottom white-bg page-heading" th:fragment="headerNav">
             <div class="col-lg-10">
-                <h2>商品管理</h2>
+                <h2>文件管理</h2>
                 <ol class="breadcrumb">
                     <li>
                         <a href="#">首页</a>
                     </li>
                     <li>
-                        <a>商品管理</a>
+                        <a>文件管理</a>
                     </li>
                     <li>
-                        <a>商品管理</a>
+                        <a>文件管理</a>
                     </li>
                     <li class="active">
-                        <strong>商品新增或修改</strong>
+                        <strong>文件新增或修改</strong>
                     </li>
                 </ol>
             </div>
@@ -89,27 +89,14 @@
 
                                 <div class="hr-line-dashed"></div>
 
-                                <div id="imageCell" class="form-group"><label class="col-sm-2 control-label">书本封面：</label>
-                                    <div class="col-sm-10">
-                                        <img  th:src="@{'/'+${file?.image}}" height="250px" width="200px" />
-                                        <button id="imageCellBut" type="button" class="btn btn-white btn-sm">&nbsp;&nbsp;&nbsp;&nbsp;修改&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                                    </div>
-                                </div>
-
-                                <div id="imputCell" class="form-group"><label class="col-sm-2 control-label">书本封面：</label>
-                                    <div class="col-sm-10">
-                                        <input id="file" name="file" type="file" />
-                                    </div>
-                                </div>
-                                
                                 <div id="fileCell" class="form-group"><label class="col-sm-2 control-label">书本内容：</label>
                                     <div class="col-sm-10">
                                         <input   type="text"  height="250px" width="200px" th:value="${file?.title}" />
-                                        <button id="imageCellBut" type="button" class="btn btn-white btn-sm">&nbsp;&nbsp;&nbsp;&nbsp;修改&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                                        <button id="fileCellBtn" type="button" class="btn btn-white btn-sm">&nbsp;&nbsp;&nbsp;&nbsp;修改&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                     </div>
                                 </div>
 
-                                <div id="fileCell" class="form-group"><label class="col-sm-2 control-label">书本内容：</label>
+                                <div id="inputCell" class="form-group"><label class="col-sm-2 control-label">书本内容：</label>
                                     <div class="col-sm-10">
                                         <input id="file" name="file" type="file" />
                                     </div>
@@ -183,14 +170,14 @@
     var image = [[${file?.image}]];
     $(document).ready(function () {
         if(image==null || image==""){
-            $("#imageCell").hide();
+            $("#fileCell").hide();
             $("#imputCell").show();
         } else {
-            $("#imageCell").show();
+            $("#fileCell").show();
             $("#imputCell").hide();
         }
-        $("#imageCellBut").click(function(){
-            $("#imageCell").hide();
+        $("#fileCellBtn").click(function(){
+            $("#fileCell").hide();
             $("#imputCell").show();
         });
     });
