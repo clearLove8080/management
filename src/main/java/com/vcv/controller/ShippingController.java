@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.vcv.mapper.OrderShippingMapper;
 import com.vcv.model.OrderShipping;
 import com.vcv.model.ResObject;
-import com.vcv.util.Constant;
 import com.vcv.util.DateUtil;
 import com.vcv.util.PageUtil;
 

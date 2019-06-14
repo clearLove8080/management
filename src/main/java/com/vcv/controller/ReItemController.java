@@ -16,7 +16,6 @@ import com.vcv.mapper.ReItemMapper;
 import com.vcv.model.Item;
 import com.vcv.model.ReItem;
 import com.vcv.model.ResObject;
-import com.vcv.util.Constant;
 import com.vcv.util.DateUtil;
 import com.vcv.util.PageUtil;
 

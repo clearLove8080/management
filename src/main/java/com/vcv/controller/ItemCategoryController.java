@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vcv.mapper.ItemCategoryMapper;
 import com.vcv.model.ItemCategory;
 import com.vcv.model.ResObject;
-import com.vcv.util.Constant;
 import com.vcv.util.DateUtil;
 import com.vcv.util.PageUtil;
 
