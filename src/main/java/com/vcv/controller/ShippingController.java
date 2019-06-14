@@ -53,7 +53,7 @@ public class ShippingController {
     @PostMapping("/user/shippingEditState")
     public ResObject<Object> shippingEditState(OrderShipping orderShipping){
         orderShippingMapper.deleteByPrimaryKey(orderShipping.getOrderId());
-        ResObject<Object> object = new ResObject<Object>(Constant.Code01, Constant.Msg01, null, null);
+        ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }
 }

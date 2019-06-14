@@ -92,7 +92,7 @@ public class ItemCategoryController {
     @PostMapping("/user/itemCategoryEditState")
     public ResObject<Object> itemCategoryEditState(ItemCategory itemCategory){
         itemCategoryMapper.delete(itemCategory);
-        ResObject<Object> object = new ResObject<Object>(Constant.Code01, Constant.Msg01, null, null);
+        ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }
 }

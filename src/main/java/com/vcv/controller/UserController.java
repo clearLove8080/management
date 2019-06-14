@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.vcv.mapper.UserMapper;
 import com.vcv.model.User;
+import com.vcv.util.RequestContextHolderUtil;
 
 /**
  * 用户管理
@@ -24,9 +25,6 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
-
-    @Autowired
-    private HttpSession httpSession;
 
     @Autowired
     private JavaMailSender mailSender; //自动注入的Bean
@@ -57,8 +55,9 @@ public class UserController {
     public String loginPost(User user, Model model) {
         User user1 = userMapper.selectByNameAndPwd(user);
         if (user1 != null) {
-            httpSession.setAttribute("user", user1);
-            User name = (User) httpSession.getAttribute("user");
+        	
+        	RequestContextHolderUtil.getSession().setAttribute("user", user1);
+            User name = (User) RequestContextHolderUtil.getSession().getAttribute("user");
             return "redirect:dashboard";
         } else {
             model.addAttribute("error", "用户名或密码错误，请重新登录！");
@@ -144,7 +143,7 @@ public class UserController {
 
     @GetMapping("/user/userManage")
     public String userManageGet(Model model) {
-        User user = (User) httpSession.getAttribute("user");
+        User user = (User) RequestContextHolderUtil.getSession().getAttribute("user");
         User user1 = userMapper.selectByNameAndPwd(user);
         model.addAttribute("user", user1);
         return "user/userManage";

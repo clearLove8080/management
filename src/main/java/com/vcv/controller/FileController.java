@@ -136,15 +136,14 @@ public class FileController {
     String imageName = null;
 
     @GetMapping("/user/fileEdit")
-    public String fileEditGet(Model model, Item item) {
-        ItemCategory itemCategory = new ItemCategory();
-        itemCategory.setStart(0);
-        itemCategory.setEnd(Integer.MAX_VALUE);
-        List<ItemCategory> itemCategoryList = itemCategoryMapper.list(itemCategory);
-        model.addAttribute("itemCategoryList", itemCategoryList);
-        if (item.getId() != 0) {
-            Item item1 = itemMapper.findById(item);
-            String id = String.valueOf(item.getId());
+    public String fileEditGet(Model model, LearningFile file) {
+        LearningFile learningFile = new LearningFile();
+        learningFile.setStart(0);
+        learningFile.setEnd(Integer.MAX_VALUE);
+        List<LearningFile> fileList = fileMapper.list(learningFile);
+        if (file.getId() != 0) {
+        	LearningFile file1 = fileMapper.findById(file);
+            String id = String.valueOf(file.getId());
             GridFSDBFile fileById = mongoUtil.getFileById(id);
             if (fileById != null) {
                 StringBuilder sb = new StringBuilder(ROOT);
@@ -156,21 +155,21 @@ public class FileController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                item1.setImage(imageName);
+                file1.setImage(imageName);
             }
-            model.addAttribute("item", item1);
+            model.addAttribute("file", file1);
         }
-        return "item/itemEdit";
+        return "file/fileEdit";
     }
 
     @PostMapping("/user/fileEdit")
-    public String itemEditPost(Model model, HttpServletRequest request, @RequestParam("file") MultipartFile file, Item item, HttpSession httpSession) {
+    public String fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") MultipartFile file, LearningFile lfile, HttpSession httpSession) {
         //根据时间和随机数生成id
         Date date = new Date();
-        item.setCreated(date);
-        item.setUpdated(date);
-        item.setBarcode("");
-        item.setImage("");
+        lfile.setCreated(date);
+        lfile.setUpdated(date);
+        lfile.setBarcode("");
+        lfile.setImage("");
         int rannum = 0;
         if (file.isEmpty()) {
             System.out.println("图片未上传");
@@ -183,8 +182,8 @@ public class FileController {
                 }
                 LinkedHashMap<String, Object> metaMap = new LinkedHashMap<String, Object>();
                 String id = null;
-                if (item.getId() != 0) {
-                    id = String.valueOf(item.getId());
+                if (lfile.getId() != 0) {
+                    id = String.valueOf(lfile.getId());
                 } else {
                     Random random = new Random();
                     rannum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 1000;// 获取5位随机数
@@ -201,12 +200,12 @@ public class FileController {
             System.out.println("get File by Id Success");
         }
 
-        if (item.getId() != 0) {
-            itemMapper.update(item);
+        if (lfile.getId() != 0) {
+            fileMapper.update(lfile);
         } else {
 
-            item.setId(rannum);
-            itemMapper.insert(item);
+        	lfile.setId(rannum);
+        	fileMapper.insert(lfile);
         }
         return "redirect:itemManage_0_0_0";
     }
@@ -223,22 +222,22 @@ public class FileController {
 
     @ResponseBody
     @PostMapping("/user/fileEditState")
-    public ResObject<Object> itemEditState(Item item1) {
-        Item item = itemMapper.findById(item1);
+    public ResObject<Object> itemEditState(LearningFile lFile) {
+    	LearningFile learningFile = fileMapper.findById(lFile);
         ReItem reItem = new ReItem();
-        reItem.setId(item.getId());
-        reItem.setBarcode(item.getBarcode());
-        reItem.setCid(item.getCid());
-        reItem.setImage(item.getImage());
-        reItem.setPrice(item.getPrice());
-        reItem.setNum(item.getNum());
-        reItem.setSellPoint(item.getSellPoint());
-        reItem.setStatus(item.getStatus());
-        reItem.setTitle(item.getTitle());
+        reItem.setId(lFile.getId());
+        reItem.setBarcode(lFile.getBarcode());
+        reItem.setCid(lFile.getCid());
+        reItem.setImage(lFile.getImage());
+        reItem.setPrice(lFile.getPrice());
+        reItem.setNum(lFile.getNum());
+        reItem.setSellPoint(lFile.getScanPoint());
+        reItem.setStatus(lFile.getStatus());
+        reItem.setTitle(lFile.getTitle());
         reItem.setRecovered(new Date());
         reItemMapper.insert(reItem);
-        itemMapper.delete(item1);
-        ResObject<Object> object = new ResObject<Object>(Constant.Code01, Constant.Msg01, null, null);
+        fileMapper.delete(lFile);
+        ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }
 }

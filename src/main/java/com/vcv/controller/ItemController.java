@@ -236,7 +236,7 @@ public class ItemController {
         reItem.setRecovered(new Date());
         reItemMapper.insert(reItem);
         itemMapper.delete(item1);
-        ResObject<Object> object = new ResObject<Object>(Constant.Code01, Constant.Msg01, null, null);
+        ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }
 }

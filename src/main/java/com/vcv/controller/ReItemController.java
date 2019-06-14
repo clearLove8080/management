@@ -72,7 +72,7 @@ public class ReItemController {
         item.setUpdated(new Date());
         itemMapper.insert(item);
         reItemMapper.deleteByPrimaryKey(reItem.getId());
-        ResObject<Object> object = new ResObject<Object>(Constant.Code01, Constant.Msg01, null, null);
+        ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }
 
@@ -80,7 +80,7 @@ public class ReItemController {
     @PostMapping("/user/deleteItemEditState")
     public ResObject<Object> deleteItemEditState(ReItem reItem) {
         reItemMapper.deleteByPrimaryKey(reItem.getId());
-        ResObject<Object> object = new ResObject<Object>(Constant.Code01, Constant.Msg01, null, null);
+        ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }
 

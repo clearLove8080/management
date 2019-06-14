@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="col-sm-2 m-b-xs">
                                        <select name="cid" id="cid" class="form-control" >
-                                            <option value="0" th:selected="${learningFile.cid==0}">--请选择商品分类--</option>
+                                            <option value="0" th:selected="${learningFile.cid==0}">--请选择文件分类--</option>
 <!--                                             <option th:each="ic : ${itemCategoryList}" th:value="${ic.id}" th:text="${ic.name}" th:selected="${ic.id==file.cid}">分类</option>
  -->                                        </select>
                                     </div>
@@ -79,7 +79,7 @@
                             </form>
                             <div class="row">
                                 <div class="col-sm-6 m-b-xs">
-                                    <a th:href="@{itemEdit}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="" data-original-title="Refresh inbox"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;新增商品&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                                    <a th:href="@{fileEdit}" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="" data-original-title="Refresh inbox"><i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;上传文件&nbsp;&nbsp;&nbsp;&nbsp;</a>
                                 </div>
                                 <div class="col-sm-6 m-b-xs">
                                 </div>
@@ -91,7 +91,7 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>商品列表</h5>
+                            <h5>文件列表</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
