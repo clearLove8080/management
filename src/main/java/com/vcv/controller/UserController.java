@@ -4,6 +4,9 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,8 +16,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.vcv.Application;
 import com.vcv.mapper.UserMapper;
 import com.vcv.model.User;
+import com.vcv.redis.RedisService;
+import com.vcv.util.Constants;
 import com.vcv.util.RequestContextHolderUtil;
 
 /**
@@ -22,9 +28,13 @@ import com.vcv.util.RequestContextHolderUtil;
  */
 @Controller
 public class UserController {
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserMapper userMapper;
+    
+    @Autowired
+    private RedisService redisService;
 
     @Autowired
     private JavaMailSender mailSender; //自动注入的Bean
@@ -40,6 +50,12 @@ public class UserController {
      */
     @GetMapping("/user/login")
     public String loginGet(Model model) {
+    	//先根据Redis缓存取数据
+    	String user_ticket=redisService.getValue(Constants.LOGIN_TICKET.getValue());
+
+    	if(RequestContextHolderUtil.getSession().getId().equals(user_ticket)) {
+    			return "redirect:dashboard";
+    	}
         return "login";
     }
 
@@ -53,16 +69,16 @@ public class UserController {
      */
     @PostMapping("/user/login")
     public String loginPost(User user, Model model) {
-        User user1 = userMapper.selectByNameAndPwd(user);
-        if (user1 != null) {
-        	
-        	RequestContextHolderUtil.getSession().setAttribute("user", user1);
-            User name = (User) RequestContextHolderUtil.getSession().getAttribute("user");
-            return "redirect:dashboard";
-        } else {
-            model.addAttribute("error", "用户名或密码错误，请重新登录！");
-            return "login";
-        }
+    	 User user1 = userMapper.selectByNameAndPwd(user);
+         if (user1 != null) {
+         	 RequestContextHolderUtil.getSession().setAttribute("user", user1);
+         	 redisService.setValue(Constants.LOGIN_TICKET.getValue(), RequestContextHolderUtil.getSession().getId());
+             User name = (User) RequestContextHolderUtil.getSession().getAttribute("user");
+             return "redirect:dashboard";
+         } else {
+         	 model.addAttribute("error", "用户名或密码错误，请重新登录！");
+             return "login";
+         }
     }
 
     /**

@@ -18,6 +18,9 @@
     <!-- summernote style -->
     <link th:href="@{/css/plugins/summernote/summernote.css}" rel="stylesheet" />
     <link th:href="@{/css/plugins/summernote/summernote-bs3.css}" rel="stylesheet" />
+    
+    <!-- select2 -->
+    <link th:href="@{/css/select2/select2.min.css}" rel="stylesheet" />
 
 </head>
 
@@ -165,7 +168,8 @@
 <!-- SUMMERNOTE -->
 <script th:src="@{/js/plugins/summernote/summernote.min.js}"></script>
 
-
+ <!-- select2 -->
+ <script th:src="@{/js/select2/select2.min.js}"></script>
 <script th:inline="javascript">
     var image = [[${file?.image}]];
     $(document).ready(function () {
@@ -217,8 +221,7 @@
             $("#formTag").submit();
         });
     });
-    
-    $.ajax({
+   $.ajax({
         url: "/dictController/getDictByType?type=book_type",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -230,7 +233,29 @@
         error: function(){
             alert("系统异常！");
         }
+    }); 
+    
+    /* var dictTypes;
+    $.ajax({
+        url: "/dictController/getDictByType?type=book_type",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        type: "get",
+        success: function(data){
+        	debugger
+        	 for (var i = 0; i < data.size; i++) {
+        		data[i].id = data[i].id;
+        		data[i].text = data[i].dicName;
+            }
+        	dictTypes=data; 
+        },
+        error: function(){
+            alert("系统异常！");
+        }
     });
+    $("#cid").select2({
+        data : selectChannel
+    }); */
 </script>
 
 </body>

@@ -15,7 +15,8 @@ public enum Constants {
 	DEV_LOG_ROOT_DAILY("info,error,CONSOLE,DEBUG"),
 	DEV_LOG_PATH_DAILY("E:/logs/infos"),
 	PRO_LOG_ROOT_DAILY("CONSOLE,info,error,DEBUG"),
-	PRO_LOG_PATH_DAILY("/home/admin/logs/infos");
+	PRO_LOG_PATH_DAILY("/home/admin/logs/infos"),
+	LOGIN_TICKET("login_ticket");
 	private String value;
 	private Constants(String value) {
 		this.value=value;

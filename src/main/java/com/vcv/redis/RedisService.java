@@ -159,5 +159,68 @@ public class RedisService {
             jedis.close();//不是关闭，只是返回连接池
         }
     }
-
+    
+    public String getValue(String key) {
+    	Jedis jedis = null;
+    	String value="";
+        try {
+            jedis =  jedisPool.getResource();
+            //通过key获取value
+            value  = jedis.get(key);
+        }finally {
+            returnToPool(jedis);
+        }
+    	return value;
+    }
+    
+    /**
+     * 判断key是否存在
+     * */
+    public <T> boolean exists(String key) {
+        Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //判断key是否存在
+            return  jedis.exists(key);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+    
+    /**
+     * 根据key设置value值
+     * @param key
+     * @return
+     */
+    public String setValue(String key,String value) {
+    	Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //通过key获取value
+            value  = jedis.set(key, value);
+        }finally {
+            returnToPool(jedis);
+        }
+    	return value;
+    }
+    
+    
+    
+    /**
+     * 根据key设置value值,并且设置超时时间
+     * @param key
+     * @return
+     */
+    public String setValue(String key,String value,int time) {
+    	Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //通过key获取value
+            value = jedis.set(key, value);
+            jedis.expire(key, time);
+        }finally {
+            returnToPool(jedis);
+        }
+    	return value;
+    }
 }
