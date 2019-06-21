@@ -59,7 +59,7 @@ public class FileServiceImpl implements FileService{
         Date date = new Date();
         lfile.setCreated(date);
         lfile.setUpdated(date);
-        if (lfile.getId() != 0) {
+        if (lfile.getId()>=0) {
         	int flag=0;
         	try {
         		flag =fileMapper.update(lfile);

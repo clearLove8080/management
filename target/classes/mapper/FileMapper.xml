@@ -13,7 +13,8 @@
         <result column="status" property="status" jdbcType="TINYINT"/>
         <result column="created" property="created" jdbcType="TIMESTAMP"/>
         <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
-        <result column="categoryName" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="file_url" property="fileUrl" jdbcType="VARCHAR"/>
     </resultMap>
 
 
@@ -24,8 +25,8 @@
     <select id="selectAll" resultMap="BaseResultMap">
         SELECT * from tb_file
     </select>
-queryList
-    <select id="list" resultMap="BaseResultMap" parameterType="com.vcv.model.Item">
+    
+    <select id="list" resultMap="BaseResultMap" parameterType="com.vcv.model.LearningFile">
         SELECT i.* , t.name as categoryName FROM tb_file i LEFT JOIN tb_category t ON i.cid = t.id WHERE i.status = 1
         <if test="title != null">
             AND title LIKE concat('%', #{title, jdbcType=VARCHAR}, '%')
@@ -40,7 +41,7 @@ queryList
         limit #{start, jdbcType=INTEGER},#{end, jdbcType=INTEGER}
     </select>
 
-    <select id="listS" resultMap="BaseResultMap" parameterType="com.vcv.model.Item">
+    <select id="listS" resultMap="BaseResultMap" parameterType="com.vcv.model.LearningFile">
         SELECT i.* , t.name as categoryName FROM tb_file i LEFT JOIN tb_category t ON i.cid = t.id WHERE i.status = 1
         <if test="title != null">
             AND title LIKE concat('%', #{title, jdbcType=VARCHAR}, '%')
@@ -55,7 +56,7 @@ queryList
         limit #{start, jdbcType=INTEGER},#{end, jdbcType=INTEGER}
     </select>
 
-    <select id="count" resultType="java.lang.Integer" parameterType="com.vcv.model.Item">
+    <select id="count" resultType="java.lang.Integer" parameterType="com.vcv.model.LearningFile">
         SELECT count(*) from tb_file i LEFT JOIN tb_category t ON i.cid = t.id WHERE i.status = 1
         <if test="title != null">
             AND title LIKE concat('%', #{title, jdbcType=VARCHAR}, '%')
@@ -69,8 +70,8 @@ queryList
             ORDER BY price
         </if>
     </select>
-    <insert id="insert" parameterType="com.vcv.model.Item" useGeneratedKeys="true" keyProperty="id">
-         INSERT INTO tb_file (id, title, scan_point, price, num, barcode, image, cid, status, created, updated)
+    <insert id="insert" parameterType="com.vcv.model.LearningFile" useGeneratedKeys="true" keyProperty="id">
+         INSERT INTO tb_file (id, title, scan_point, price, num, barcode, image, cid, status, created, updated,file_url)
          VALUE (
          #{id, jdbcType=INTEGER},
          #{title, jdbcType=VARCHAR},
@@ -82,11 +83,12 @@ queryList
          #{cid, jdbcType=INTEGER},
          1,
          #{created, jdbcType=TIMESTAMP},
-         #{updated, jdbcType=TIMESTAMP}
+         #{updated, jdbcType=TIMESTAMP},
+         #{fileUrl, jdbcType=VARCHAR}
           )
     </insert>
 
-    <update id="update" parameterType="com.vcv.model.Item">
+    <update id="update" parameterType="com.vcv.model.LearningFile">
         UPDATE tb_file SET
         <if test="title != null">
             title = #{title, jdbcType=VARCHAR},
@@ -109,9 +111,12 @@ queryList
         <if test="image != null">
             image = #{image, jdbcType=VARCHAR}
         </if>
+         <if test="image != null">
+            file_url= #{fileUrl, jdbcType=VARCHAR}
+        </if>
         WHERE id = #{id, jdbcType=INTEGER}
     </update>
-    <delete id="delete" parameterType="com.vcv.model.Item">
+    <delete id="delete" parameterType="com.vcv.model.LearningFile">
         DELETE FROM tb_file WHERE id = #{id, jdbcType=INTEGER}
     </delete>
 </mapper>

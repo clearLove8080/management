@@ -146,28 +146,13 @@ public class FileController extends BaseController{
 
     @GetMapping("/user/fileEdit")
     public String fileEditGet(Model model, LearningFile file) {
-        LearningFile learningFile = new LearningFile();
-        learningFile.setStart(0);
-        learningFile.setEnd(Integer.MAX_VALUE);
-        List<LearningFile> fileList = fileMapper.list(learningFile);
-        if (file.getId() != 0) {
-        	LearningFile file1 = fileMapper.findById(file);
-            String id = String.valueOf(file.getId());
-            GridFSDBFile fileById = mongoUtil.getFileById(id);
-            if (fileById != null) {
-                StringBuilder sb = new StringBuilder(ROOT);
-                imageName = fileById.getFilename();
-                sb.append(imageName);
-                try {
-                    getFile = new File(sb.toString());
-                    fileById.writeTo(getFile);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                file1.setImage(imageName);
-            }
-            model.addAttribute("file", file1);
-        }
+    	LearningFile learningFile = fileMapper.findById(file);
+        //learningFile.setStart(0);
+        //learningFile.setEnd(Integer.MAX_VALUE);
+    	if(learningFile==null) {
+    		learningFile=new LearningFile();
+    	}
+        model.addAttribute("file", file);
         return "file/fileEdit";
     }
 

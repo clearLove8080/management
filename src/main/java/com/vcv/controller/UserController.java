@@ -54,7 +54,10 @@ public class UserController {
     	String user_ticket=redisService.getValue(Constants.LOGIN_TICKET.getValue());
 
     	if(RequestContextHolderUtil.getSession().getId().equals(user_ticket)) {
-    			return "redirect:dashboard";
+    		User user=(User) RequestContextHolderUtil.getSession().getAttribute("user");
+    			if(user!=null) {
+    				return "redirect:dashboard";
+    			}
     	}
         return "login";
     }
