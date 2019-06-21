@@ -1,6 +1,7 @@
 package com.vcv.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -28,4 +29,6 @@ public interface FileMapper {
 
 
     List<LearningFile> selectAll();
+
+	List<LearningFile> queryList(Map<String, String> formData);
 }

@@ -9,12 +9,15 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +30,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.mongodb.gridfs.GridFSDBFile;
+import com.vcv.Application;
 import com.vcv.mapper.FileMapper;
 import com.vcv.mapper.ItemCategoryMapper;
 import com.vcv.mapper.ItemMapper;
@@ -36,8 +41,11 @@ import com.vcv.mapper.ReItemMapper;
 import com.vcv.model.LearningFile;
 import com.vcv.model.ReItem;
 import com.vcv.model.ResObject;
+import com.vcv.service.FileService;
+import com.vcv.util.Constants;
 import com.vcv.util.DateUtil;
 import com.vcv.util.ExcelUtil;
+import com.vcv.util.FileUtils;
 import com.vcv.util.MongoUtil;
 import com.vcv.util.PageUtil;
 
@@ -46,17 +54,16 @@ import com.vcv.util.PageUtil;
  * 商品管理
  */
 @Controller
-public class FileController {
+public class FileController extends BaseController{
+	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @Autowired
-    private ItemMapper itemMapper;
-
-    @Autowired
-    private ItemCategoryMapper itemCategoryMapper;
-    
     @Autowired
     private FileMapper fileMapper;
 
+    @Autowired
+    private FileService fileService;
+    
+    
     @Autowired
     private ReItemMapper reItemMapper;
 
@@ -82,8 +89,7 @@ public class FileController {
                              Model model) {
         if (pageSize == 0) pageSize = 50;
         if (pageCurrent == 0) pageCurrent = 1;
-
-        int rows = fileMapper.count(learningFile);
+        int rows = fileService.count(learningFile);
         if (pageCount == 0) pageCount = rows % pageSize == 0 ? (rows / pageSize) : (rows / pageSize) + 1;
         learningFile.setStart((pageCurrent - 1) * pageSize);
         learningFile.setEnd(pageSize);
@@ -102,12 +108,28 @@ public class FileController {
         return "file/fileManage";
     }
 
-    @RequestMapping("/user/file/download1")
+    @RequestMapping("/user/file/getExcels")
     public void postItemExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    	
         //导出excel
         LinkedHashMap<String, String> fieldMap = new LinkedHashMap<String, String>();
-        fieldMap.put("id", "商品id");
+        fieldMap=setFieldMap(fieldMap);
+        String sheetName = "商品管理报表";
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-disposition", "attachment;filename=ItemManage.xls");//默认Excel名称
+        response.flushBuffer();
+        OutputStream fos = response.getOutputStream();
+        try {
+        	List files=fileService.queryList(getFormData(request));
+        	ExcelUtil.listToExcel(fileList, fieldMap, sheetName, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private LinkedHashMap<String, String> setFieldMap(LinkedHashMap<String, String> fieldMap) {
+    	fieldMap.put("id", "商品id");
         fieldMap.put("title", "商品标题");
         fieldMap.put("sellPoint", "商品卖点");
         fieldMap.put("price", "商品价格");
@@ -117,20 +139,10 @@ public class FileController {
         fieldMap.put("status", "商品状态，1-正常，2-下架，3-删除");
         fieldMap.put("created", "创建时间");
         fieldMap.put("updated", "更新时间");
-        String sheetName = "商品管理报表";
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment;filename=ItemManage.xls");//默认Excel名称
-        response.flushBuffer();
-        OutputStream fos = response.getOutputStream();
-        try {
-            ExcelUtil.listToExcel(fileList, fieldMap, sheetName, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		return fieldMap;
+	}
 
-    }
-
-    String imageName = null;
+	String imageName = null;
 
     @GetMapping("/user/fileEdit")
     public String fileEditGet(Model model, LearningFile file) {
@@ -160,51 +172,21 @@ public class FileController {
     }
 
     @PostMapping("/user/fileEdit")
-    public String fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") MultipartFile file, LearningFile lfile, HttpSession httpSession) {
-        //根据时间和随机数生成id
-        Date date = new Date();
-        lfile.setCreated(date);
-        lfile.setUpdated(date);
-        lfile.setBarcode("");
-        lfile.setImage("");
-        int rannum = 0;
-        if (file.isEmpty()) {
-            System.out.println("图片未上传");
-        } else {
-            try {
-                Path path = Paths.get(ROOT, file.getOriginalFilename());
-                File tempFile = new File(path.toString());
-                if (!tempFile.exists()) {
-                    Files.copy(file.getInputStream(), path);
-                }
-                LinkedHashMap<String, Object> metaMap = new LinkedHashMap<String, Object>();
-                String id = null;
-                if (lfile.getId() != 0) {
-                    id = String.valueOf(lfile.getId());
-                } else {
-                    Random random = new Random();
-                    rannum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 1000;// 获取5位随机数
-                    id = String.valueOf(rannum);
-                }
-                metaMap.put("contentType", "jpg");
-                metaMap.put("_id", id);
-                mongoUtil.uploadFile(tempFile, id, metaMap);
-                tempFile.delete();
-                getFile.delete();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            System.out.println("get File by Id Success");
-        }
-
-        if (lfile.getId() != 0) {
-            fileMapper.update(lfile);
-        } else {
-
-        	lfile.setId(rannum);
-        	fileMapper.insert(lfile);
-        }
-        return "redirect:itemManage_0_0_0";
+    @ResponseBody
+    public ResObject fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") MultipartFile file, LearningFile lfile, HttpSession httpSession) {
+    	ResObject result=new ResObject().successRes();
+    	//上传文件
+    	Map<String,Object> data=fileService.uploadFile(file,lfile); 
+    	//设置参数并且保存file
+    	if("success".equals(data.get("result"))) {
+    		data=fileService.saveFile(lfile); 
+    	}
+    	if("success".equals(data.get("result"))) {
+    		result.setFlag(true);
+    		result.setResMsg(data.get("msg").toString());;
+    	}
+       // return "redirect:itemManage_0_0_0";
+        return result;
     }
 
     @GetMapping(value = "/file/{filename:.+}")

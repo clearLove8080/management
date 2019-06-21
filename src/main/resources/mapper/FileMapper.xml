@@ -24,7 +24,7 @@
     <select id="selectAll" resultMap="BaseResultMap">
         SELECT * from tb_file
     </select>
-
+queryList
     <select id="list" resultMap="BaseResultMap" parameterType="com.vcv.model.Item">
         SELECT i.* , t.name as categoryName FROM tb_file i LEFT JOIN tb_category t ON i.cid = t.id WHERE i.status = 1
         <if test="title != null">

@@ -24,6 +24,7 @@ public class LearningFile extends BaseObject{
     private Integer maxPrice;
     private Integer minNum;
     private Integer maxNum;
+    private String fileUrl;
 	public int getId() {
 		return id;
 	}
@@ -131,6 +132,12 @@ public class LearningFile extends BaseObject{
 	}
 	public void setMaxNum(Integer maxNum) {
 		this.maxNum = maxNum;
+	}
+	public String getFileUrl() {
+		return fileUrl;
+	}
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
 	}
     
 }

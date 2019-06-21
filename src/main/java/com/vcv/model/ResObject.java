@@ -5,17 +5,49 @@ import lombok.Data;
 public class ResObject<T> {
 
 	private String resCode;
-	private String resMessage;
+	private String resMsg;
 	private InfoData infoData;
 	private Boolean flag;
 	
+	public String getResCode() {
+		return resCode;
+	}
+
+	public void setResCode(String resCode) {
+		this.resCode = resCode;
+	}
+
+	public String getResMsg() {
+		return resMsg;
+	}
+
+	public void setResMsg(String resMsg) {
+		this.resMsg = resMsg;
+	}
+
+	public InfoData getInfoData() {
+		return infoData;
+	}
+
+	public void setInfoData(InfoData infoData) {
+		this.infoData = infoData;
+	}
+
+	public Boolean getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Boolean flag) {
+		this.flag = flag;
+	}
+
 	public ResObject() {
 		
 	}
 	
-	public ResObject(String resCode,String resMessage,InfoData infoData,Boolean flag){
+	public ResObject(String resCode,String resMsg,InfoData infoData,Boolean flag){
 		this.resCode = resCode;
-		this.resMessage = resMessage;
+		this.resMsg = resMsg;
 		this.infoData = infoData;
 		this.flag = flag;
 	}
