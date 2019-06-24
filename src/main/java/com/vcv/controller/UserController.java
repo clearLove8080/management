@@ -61,6 +61,18 @@ public class UserController {
     	}
         return "login";
     }
+    
+    /**
+     * 登录跳转
+     *
+     * @param model
+     * @return
+     */
+    @GetMapping("/login")
+    public String login(Model model) {
+    	 
+        return "login";
+    }
 
     /**
      * 登录

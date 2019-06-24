@@ -29,6 +29,8 @@ public class FileServiceImpl implements FileService{
 	private FileMapper fileMapper;
 	@Override
 	public Map<String, Object> uploadFile(MultipartFile file, LearningFile lfile) {
+		String fileName=file.getOriginalFilename();
+		String fileSuffix=fileName.substring(fileName.indexOf('.'), fileName.length());
 		Map<String,Object>result=Maps.newHashMap();
 		 if (file.isEmpty()) {
 	        	result.put("result", "fail");
@@ -36,7 +38,7 @@ public class FileServiceImpl implements FileService{
 	        	return result;
 	        } else {
 	            try {
-	                String path = Constants.DEV_SAVE_PATH.getValue()+file.getName()+System.currentTimeMillis();
+	                String path = Constants.DEV_SAVE_PATH.getValue()+file.getName()+System.currentTimeMillis()+fileSuffix;
 	                File tempFile = new File(path);
 	                if (!tempFile.exists()) {
 	                   FileUtils.upload2(path, file.getName(), (CommonsMultipartFile)file);
@@ -59,7 +61,7 @@ public class FileServiceImpl implements FileService{
         Date date = new Date();
         lfile.setCreated(date);
         lfile.setUpdated(date);
-        if (lfile.getId()>=0) {
+        if (lfile.getId()>0) {
         	int flag=0;
         	try {
         		flag =fileMapper.update(lfile);
@@ -99,6 +101,12 @@ public class FileServiceImpl implements FileService{
 	@Override
 	public List<LearningFile> queryList(Map<String, String> formData) {
 		return fileMapper.queryList(formData);
+	}
+
+	@Override
+	public String getPathById(String fileId) {
+		 
+		return fileMapper.getPathById(fileId);
 	}
 
 }

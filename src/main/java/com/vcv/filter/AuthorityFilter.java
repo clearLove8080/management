@@ -24,7 +24,7 @@ import com.vcv.model.User;
  * 
  * @author 
  */
-@Component
+//@Component
 public class AuthorityFilter implements Filter {
 	private static final Logger logger = LoggerFactory.getLogger(AuthorityFilter.class);
 

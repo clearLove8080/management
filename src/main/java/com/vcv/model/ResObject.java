@@ -55,7 +55,7 @@ public class ResObject<T> {
 		return  new ResObject<T>("666", "操作成功", infoData, true);
 	}
 	
-	public  ResObject<T> failRes() {
-		return  new ResObject<T>("000", "操作失败", infoData, false);
+	public  ResObject<T> failRes(String msg) {
+		return  new ResObject<T>("000",msg, infoData, false);
 	}
 }
