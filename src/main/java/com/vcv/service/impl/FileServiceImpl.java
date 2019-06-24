@@ -38,7 +38,7 @@ public class FileServiceImpl implements FileService{
 	        	return result;
 	        } else {
 	            try {
-	                String path = Constants.DEV_SAVE_PATH.getValue()+file.getName()+System.currentTimeMillis()+fileSuffix;
+	                String path = Constants.PRO_SAVE_PATH.getValue()+file.getName()+System.currentTimeMillis()+fileSuffix;
 	                File tempFile = new File(path);
 	                if (!tempFile.exists()) {
 	                   FileUtils.upload2(path, file.getName(), (CommonsMultipartFile)file);
