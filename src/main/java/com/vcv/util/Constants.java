@@ -18,7 +18,8 @@ public enum Constants {
 	PRO_LOG_PATH_DAILY("/home/admin/logs/infos"),
 	DEV_SAVE_PATH("E:/files/save/"),
 	PRO_SAVE_PATH("/home/admin/files/save/"),
-	LOGIN_TICKET("login_ticket");
+	LOGIN_TICKET("login_ticket"),
+	FILE_SIZE("1024*1024*30");
 	
 	private String value;
 	private Constants(String value) {

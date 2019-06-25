@@ -41,6 +41,7 @@ import com.vcv.mapper.ReItemMapper;
 import com.vcv.model.LearningFile;
 import com.vcv.model.ReItem;
 import com.vcv.model.ResObject;
+import com.vcv.model.User;
 import com.vcv.service.FileService;
 import com.vcv.util.Constants;
 import com.vcv.util.DateUtil;
@@ -48,6 +49,7 @@ import com.vcv.util.ExcelUtil;
 import com.vcv.util.FileUtils;
 import com.vcv.util.MongoUtil;
 import com.vcv.util.PageUtil;
+import com.vcv.util.RequestContextHolderUtil;
 
 
 /**
@@ -158,11 +160,29 @@ public class FileController extends BaseController{
 
     @PostMapping("/user/fileEdit")
     @ResponseBody
-    public ResObject fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") MultipartFile file, LearningFile lfile, HttpSession httpSession) {
+    public ResObject fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") CommonsMultipartFile file, LearningFile lfile, HttpSession httpSession) {
     	ResObject result=new ResObject().successRes();
+    	User user =(User) RequestContextHolderUtil.getSession().getAttribute("user");
+    	if(user==null) {
+    		result.setResMsg("用户未登陆");
+    		result.setFlag(false);
+    		return result;
+    	}
     	//上传文件
     	if(file.getSize()<=0) {
-    		return new ResObject().failRes("请导入文件");
+    		result.setResMsg("请导入文件");
+    		result.setFlag(false);
+    		return result;
+    	}
+    	if(file.getSize()>Integer.parseInt(Constants.FILE_SIZE.getValue())) {
+    		result.setResMsg("文件不能超过30M");
+    		result.setFlag(false);
+    		return result;
+    	}
+    	if(user.getRoleId()!=1) {
+    		result.setResMsg("权限不足");
+    		result.setFlag(false);
+    		return result;
     	}
     	Map<String,Object> data=fileService.uploadFile(file,lfile); 
     	//设置参数并且保存file

@@ -14,6 +14,7 @@ public class User extends BaseObject {
 	private Date addDate;
 	private Date updateDate;
 	private int state;
+	private int roleId;
 	public int getId() {
 		return id;
 	}
@@ -74,5 +75,10 @@ public class User extends BaseObject {
 	public void setState(int state) {
 		this.state = state;
 	}
-	
+	public int getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
 }
