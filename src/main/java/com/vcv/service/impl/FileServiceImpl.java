@@ -20,6 +20,7 @@ import com.vcv.model.LearningFile;
 import com.vcv.service.FileService;
 import com.vcv.util.Constants;
 import com.vcv.util.FileUtils;
+import com.vcv.util.qiniu.QiNiuFiles;
 
 @Service
 @Transactional
@@ -28,7 +29,7 @@ public class FileServiceImpl implements FileService{
 	@Autowired
 	private FileMapper fileMapper;
 	@Override
-	public Map<String, Object> uploadFile(MultipartFile file, LearningFile lfile) {
+	public Map<String, Object> uploadFile(CommonsMultipartFile file, LearningFile lfile) {
 		String fileName=file.getOriginalFilename();
 		String fileSuffix=fileName.substring(fileName.indexOf('.'), fileName.length());
 		Map<String,Object>result=Maps.newHashMap();
@@ -38,10 +39,11 @@ public class FileServiceImpl implements FileService{
 	        	return result;
 	        } else {
 	            try {
+	            	String flag=QiNiuFiles.uploadFileByStream(file);
 	                String path = Constants.PRO_SAVE_PATH.getValue()+file.getName()+System.currentTimeMillis()+fileSuffix;
 	                File tempFile = new File(path);
 	                if (!tempFile.exists()) {
-	                   FileUtils.upload2(path, file.getName(), (CommonsMultipartFile)file);
+	                   FileUtils.upload2(path, file.getName(), file);
 	                   lfile.setFileUrl(path);
 	                }
 	                result.put("result", "success");

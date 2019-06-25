@@ -12,6 +12,7 @@
         <result column="addDate" property="addDate" jdbcType="DATE"/>
         <result column="updateDate" property="updateDate" jdbcType="DATE"/>
         <result column="state" property="state" jdbcType="TINYINT"/>
+        <result column="role_id" property="roleId" jdbcType="TINYINT"/>
     </resultMap>
 
     <select id="selectByNameAndPwd" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -27,8 +28,8 @@
     </select>
 
     <insert id="insert" parameterType="com.vcv.model.User">
-        INSERT INTO tb_user (id, userName, password, realName, business, email, headPicture, addDate, updateDate, state)
-        VALUES   (null, #{userName, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR}, null, null, #{email, jdbcType=VARCHAR}, null, #{addDate, jdbcType=DATE}, #{updateDate, jdbcType=DATE}, 1)
+        INSERT INTO tb_user (id, userName, password, realName, business, email, headPicture, addDate, updateDate, state,role_id)
+        VALUES   (null, #{userName, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR}, null, null, #{email, jdbcType=VARCHAR}, null, #{addDate, jdbcType=DATE}, #{updateDate, jdbcType=DATE}, 1,null)
     </insert>
 
     <update id="update" parameterType="com.vcv.model.User">
@@ -37,7 +38,8 @@
         email = #{email, jdbcType=VARCHAR},
         realName = #{realName, jdbcType=VARCHAR},
         business = #{business, jdbcType=VARCHAR},
-        updateDate = #{updateDate, jdbcType=DATE}
+        updateDate = #{updateDate, jdbcType=DATE},
+        role_id = #{roleId, jdbcType=TINYINT}
         WHERE   userName = #{userName, jdbcType=VARCHAR}
     </update>
 </mapper>
