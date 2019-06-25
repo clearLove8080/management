@@ -71,9 +71,8 @@
         </if>
     </select>
     <insert id="insert" parameterType="com.vcv.model.LearningFile" useGeneratedKeys="true" keyProperty="id">
-         INSERT INTO tb_file (id, title, scan_point, price, num, barcode, image, cid, status, created, updated,file_url)
+         INSERT INTO tb_file (title, scan_point, price, num, barcode, image, cid, status, created, updated,file_url)
          VALUE (
-         #{id, jdbcType=INTEGER},
          #{title, jdbcType=VARCHAR},
          #{scanPoint, jdbcType=VARCHAR},
          #{price, jdbcType=INTEGER},
@@ -109,9 +108,9 @@
             updated = #{updated, jdbcType=TIMESTAMP},
         </if>
         <if test="image != null">
-            image = #{image, jdbcType=VARCHAR}
+            image = #{image, jdbcType=VARCHAR},in
         </if>
-         <if test="image != null">
+         <if test="fileUrl != null">
             file_url= #{fileUrl, jdbcType=VARCHAR}
         </if>
         WHERE id = #{id, jdbcType=INTEGER}
@@ -119,4 +118,9 @@
     <delete id="delete" parameterType="com.vcv.model.LearningFile">
         DELETE FROM tb_file WHERE id = #{id, jdbcType=INTEGER}
     </delete>
+    
+     <select id="getPathById" resultType="java.lang.String" parameterType="java.lang.String">
+		select file_url from tb_file where id = #{fileId}
+    </select>
+    
 </mapper>

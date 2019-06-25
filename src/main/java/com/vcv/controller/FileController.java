@@ -161,6 +161,9 @@ public class FileController extends BaseController{
     public ResObject fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") MultipartFile file, LearningFile lfile, HttpSession httpSession) {
     	ResObject result=new ResObject().successRes();
     	//上传文件
+    	if(file.getSize()<=0) {
+    		return new ResObject().failRes("请导入文件");
+    	}
     	Map<String,Object> data=fileService.uploadFile(file,lfile); 
     	//设置参数并且保存file
     	if("success".equals(data.get("result"))) {
@@ -182,6 +185,14 @@ public class FileController extends BaseController{
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+    
+    @GetMapping(value = "/file/download")
+    @ResponseBody
+    public String getFile(String fileId,HttpServletResponse response ) {
+        String path=fileService.getPathById(fileId);
+    	FileUtils.download(path, response);
+    	return "下载成功";
     }
 
     @ResponseBody

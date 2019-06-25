@@ -17,4 +17,6 @@ public interface FileService {
 
 	List queryList(Map<String, String> formData);
 
+	String getPathById(String fileId);
+
 }
