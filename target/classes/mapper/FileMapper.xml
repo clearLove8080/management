@@ -7,7 +7,7 @@
         <result column="scan_point" property="scanPoint" jdbcType="VARCHAR"/>
         <result column="price" property="price" jdbcType="INTEGER"/>
         <result column="num" property="num" jdbcType="INTEGER"/>
-        <result column="barcode" property="barcode" jdbcType="VARCHAR"/>
+        <result column="save_key" property="saveKey" jdbcType="VARCHAR"/>
         <result column="image" property="image" jdbcType="VARCHAR"/>
         <result column="cid" property="cid" jdbcType="INTEGER"/>
         <result column="status" property="status" jdbcType="TINYINT"/>
@@ -37,7 +37,7 @@
         <if test="minPrice != null and maxPrice != null">
             AND price BETWEEN #{minPrice, jdbcType=INTEGER} AND #{maxPrice, jdbcType=INTEGER}
         </if>
-        ORDER BY updated desc
+        ORDER BY id asc
         limit #{start, jdbcType=INTEGER},#{end, jdbcType=INTEGER}
     </select>
 
@@ -71,13 +71,13 @@
         </if>
     </select>
     <insert id="insert" parameterType="com.vcv.model.LearningFile" useGeneratedKeys="true" keyProperty="id">
-         INSERT INTO tb_file (title, scan_point, price, num, barcode, image, cid, status, created, updated,file_url)
+         INSERT INTO tb_file (title, scan_point, price, num, save_key, image, cid, status, created, updated,file_url)
          VALUE (
          #{title, jdbcType=VARCHAR},
          #{scanPoint, jdbcType=VARCHAR},
          #{price, jdbcType=INTEGER},
          #{num, jdbcType=INTEGER},
-         #{barcode, jdbcType=VARCHAR},
+         #{saveKey, jdbcType=VARCHAR},
          #{image, jdbcType=VARCHAR},
          #{cid, jdbcType=INTEGER},
          1,
@@ -98,6 +98,9 @@
         <if test="price != null">
             price = #{price, jdbcType=INTEGER},
         </if>
+        <if test="saveKey != null">
+            save_key = #{saveKey, jdbcType=INTEGER},
+        </if>
         <if test="num != null">
             num = #{num, jdbcType=INTEGER},
         </if>
@@ -108,7 +111,7 @@
             updated = #{updated, jdbcType=TIMESTAMP},
         </if>
         <if test="image != null">
-            image = #{image, jdbcType=VARCHAR},in
+            image = #{image, jdbcType=VARCHAR},
         </if>
          <if test="fileUrl != null">
             file_url= #{fileUrl, jdbcType=VARCHAR}
@@ -122,5 +125,11 @@
      <select id="getPathById" resultType="java.lang.String" parameterType="java.lang.String">
 		select file_url from tb_file where id = #{fileId}
     </select>
+    
+     <select id="getSaveKeyById" resultType="java.lang.String" parameterType="java.lang.String">
+		select save_key from tb_file where id = #{fileId}
+    </select>
+    
+    
     
 </mapper>

@@ -19,7 +19,8 @@ public enum Constants {
 	DEV_SAVE_PATH("E:/files/save/"),
 	PRO_SAVE_PATH("/home/admin/files/save/"),
 	LOGIN_TICKET("login_ticket"),
-	FILE_SIZE("1024*1024*30");
+	QINIU_URL("http://ptnfl8sld.bkt.clouddn.com"),
+	FILE_SIZE("31457280");
 	
 	private String value;
 	private Constants(String value) {

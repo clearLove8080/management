@@ -50,6 +50,7 @@ import com.vcv.util.FileUtils;
 import com.vcv.util.MongoUtil;
 import com.vcv.util.PageUtil;
 import com.vcv.util.RequestContextHolderUtil;
+import com.vcv.util.qiniu.QiNiuFiles;
 
 
 /**
@@ -184,10 +185,10 @@ public class FileController extends BaseController{
     		result.setFlag(false);
     		return result;
     	}
-    	Map<String,Object> data=fileService.uploadFile(file,lfile); 
+    	Map<String,Object> data=fileService.uploadFile2Qiniu(file,lfile); 
     	//设置参数并且保存file
     	if("success".equals(data.get("result"))) {
-    		data=fileService.saveFile(lfile); 
+    		data=fileService.saveFile((LearningFile)data.get("lfile")); 
     	}
     	if("success".equals(data.get("result"))) {
     		result.setFlag(true);
@@ -207,9 +208,31 @@ public class FileController extends BaseController{
         }
     }
     
+    @GetMapping(value = "/file/downloadFromQi")
+    @ResponseBody
+    public String getFileFromServer(String fileName,HttpServletResponse response) {
+    	User user =(User) RequestContextHolderUtil.getSession().getAttribute("user");
+    	String saveKey=fileService.getSaveKeyById(fileName);
+    	String msg="下载成功";
+    	if(user==null) {
+    		msg="用户未登录";
+    		return msg;
+    	}
+    	if(user.getRoleId()!=1) {
+    		msg="权限不足";
+    		return msg;
+    	}
+    	try {
+			response.sendRedirect(QiNiuFiles.getDownloadFileUrl(saveKey));
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+    	return msg;
+    }
+    
     @GetMapping(value = "/file/download")
     @ResponseBody
-    public String getFile(String fileId,HttpServletResponse response ) {
+    public String getFileFromQiniu(String fileId,HttpServletResponse response ) {
         String path=fileService.getPathById(fileId);
     	FileUtils.download(path, response);
     	return "下载成功";
@@ -219,19 +242,7 @@ public class FileController extends BaseController{
     @PostMapping("/user/fileEditState")
     public ResObject<Object> itemEditState(LearningFile lFile) {
     	LearningFile learningFile = fileMapper.findById(lFile);
-        ReItem reItem = new ReItem();
-        reItem.setId(lFile.getId());
-        reItem.setBarcode(lFile.getBarcode());
-        reItem.setCid(lFile.getCid());
-        reItem.setImage(lFile.getImage());
-        reItem.setPrice(lFile.getPrice());
-        reItem.setNum(lFile.getNum());
-        reItem.setSellPoint(lFile.getScanPoint());
-        reItem.setStatus(lFile.getStatus());
-        reItem.setTitle(lFile.getTitle());
-        reItem.setRecovered(new Date());
-        reItemMapper.insert(reItem);
-        fileMapper.delete(lFile);
+        fileMapper.delete(learningFile);
         ResObject<Object> object = new ResObject<Object>().successRes();
         return object;
     }

@@ -33,4 +33,6 @@ public interface FileMapper {
 	List<LearningFile> queryList(Map<String, String> formData);
 
 	String getPathById(String fileId);
+	
+	String getSaveKeyById(String fileId);
 }

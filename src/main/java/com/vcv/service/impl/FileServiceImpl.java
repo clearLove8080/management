@@ -29,17 +29,17 @@ public class FileServiceImpl implements FileService{
 	@Autowired
 	private FileMapper fileMapper;
 	@Override
-	public Map<String, Object> uploadFile(CommonsMultipartFile file, LearningFile lfile) {
+	public Map<String, Object> uploadFile2Server(CommonsMultipartFile file, LearningFile lfile) {
 		String fileName=file.getOriginalFilename();
+		String filePrefix=fileName.substring(0,fileName.indexOf('.'));
 		String fileSuffix=fileName.substring(fileName.indexOf('.'), fileName.length());
 		Map<String,Object>result=Maps.newHashMap();
 		 if (file.isEmpty()) {
 	        	result.put("result", "fail");
 	        	result.put("msg", "上传文件为空");
-	        	return result;
 	        } else {
 	            try {
-	            	String flag=QiNiuFiles.uploadFileByStream(file);
+	            	String flag=QiNiuFiles.uploadFileByStream(file,filePrefix);
 	                String path = Constants.PRO_SAVE_PATH.getValue()+file.getName()+System.currentTimeMillis()+fileSuffix;
 	                File tempFile = new File(path);
 	                if (!tempFile.exists()) {
@@ -109,6 +109,29 @@ public class FileServiceImpl implements FileService{
 	public String getPathById(String fileId) {
 		 
 		return fileMapper.getPathById(fileId);
+	}
+
+	@Override
+	public Map<String, Object> uploadFile2Qiniu(CommonsMultipartFile file, LearningFile lfile) {
+		String fileName=file.getOriginalFilename();
+		String saveKey=QiNiuFiles.uploadFileByStream(file,fileName);
+		Map<String,Object>result=Maps.newHashMap();
+		if(saveKey!=null) {
+			lfile.setSaveKey(saveKey);
+			result.put("result", "success");
+	        result.put("msg", "上传文件成功");
+	        result.put("lfile", lfile);
+		}else {
+			result.put("result", "fail");
+        	result.put("msg", "上传文件失败");
+		}
+		return  result;
+	}
+
+	@Override
+	public String getSaveKeyById(String fileId) {
+		// TODO Auto-generated method stub
+		return fileMapper.getSaveKeyById(fileId);
 	}
 
 }

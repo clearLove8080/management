@@ -180,8 +180,8 @@
     $(document).ready(function () {
         $("#pageHTML").html(pageHTML);
     });
-    	function downLoadFile(id){
-	    	window.location.href="/file/download?fileId="+id;
+    	function downLoadFile(fileName){
+	    		window.location.href="/file/downloadFromQi?fileName="+fileName;
 	   	 	}
 	    
 	    	function updateState(id,state,commendState){

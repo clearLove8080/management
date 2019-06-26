@@ -11,7 +11,7 @@ public class LearningFile extends BaseObject{
     private String scanPoint;
     private int price;
     private int num;
-    private String barcode;
+    private String saveKey;
     private String image;
     private int cid;
     private int status;
@@ -55,11 +55,11 @@ public class LearningFile extends BaseObject{
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public String getBarcode() {
-		return barcode;
+	public String getSaveKey() {
+		return saveKey;
 	}
-	public void setBarcode(String barcode) {
-		this.barcode = barcode;
+	public void setSaveKey(String saveKey) {
+		this.saveKey = saveKey;
 	}
 	public String getImage() {
 		return image;

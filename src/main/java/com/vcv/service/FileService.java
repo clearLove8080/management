@@ -10,7 +10,7 @@ import com.vcv.model.LearningFile;
 
 public interface FileService {
 
-	Map<String, Object> uploadFile(CommonsMultipartFile file, LearningFile lfile);
+	Map<String, Object> uploadFile2Server(CommonsMultipartFile file, LearningFile lfile);
 
 	Map<String, Object> saveFile(LearningFile lfile);
 
@@ -19,5 +19,9 @@ public interface FileService {
 	List queryList(Map<String, String> formData);
 
 	String getPathById(String fileId);
+
+	Map<String, Object> uploadFile2Qiniu(CommonsMultipartFile file, LearningFile lfile);
+
+	String getSaveKeyById(String fileName);
 
 }

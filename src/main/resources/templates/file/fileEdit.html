@@ -220,7 +220,6 @@
             var form = $('#formTag');  
             debugger
 			var formdata = new FormData(form[0]);   
-			
 			$.ajax({  
 		        type : "POST",  
 		        url : "/user/fileEdit",
@@ -229,10 +228,13 @@
 		        cache: false,  
 		        contentType: false,  
 		        processData: false,
-		        success : function(msg) {  
-		            if(msg){
-		            alert('提交成功！');
-		            } 
+		        success : function(data) {  
+		            if(data==null){
+		            	alert('系统错误！');
+		            } else if(data.flag==true){
+		            	toastr.success("新增成功！",'提示');
+		            	window.location.href="/user/fileManage_0_0_0";
+		            }
 		        }  
 		});  
           /*  $.ajax({
