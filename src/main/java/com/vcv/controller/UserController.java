@@ -68,7 +68,7 @@ public class UserController {
      * @param model
      * @return
      */
-    @GetMapping("/login")
+    @GetMapping({"/login","/",""})
     public String login(Model model) {
     	 
         return "login";
