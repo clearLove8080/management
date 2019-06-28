@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.vcv.redis.RedisService;
+import com.vcv.util.MailUtil;
 import com.vcv.util.PasswordUtil;
 
 @Controller
@@ -24,5 +25,13 @@ public class CheckController {
 			redisService.setValue(email, "open", 1800);
 		}
 		return "尊敬的用户,此邮件仅为验证邮件!";
+	}
+	
+	@RequestMapping(value="registerCode",method=RequestMethod.GET)
+	@ResponseBody
+	public String sendCode(String email) {
+		String url=PasswordUtil.Base64Encode(email);
+		MailUtil.sendTextMail(email, "");
+		return null;
 	}
 }

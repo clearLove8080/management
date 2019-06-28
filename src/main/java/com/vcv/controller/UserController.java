@@ -115,6 +115,12 @@ public class UserController {
      */
     @PostMapping("/user/register")
     public String registerPost(User user, Model model) {
+    	//校验邮箱
+    	String value=redisService.getValue(user.getEmail());
+    	if(value==null) {
+    		 model.addAttribute("error", "请查看邮件并完成验证");
+    		 return "register";
+    	}
         System.out.println("用户名" + user.getUserName());
         try {
             userMapper.selectIsName(user);
