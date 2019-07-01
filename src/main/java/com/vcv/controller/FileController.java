@@ -223,8 +223,9 @@ public class FileController extends BaseController{
     		return msg;
     	}
     	try {
-			response.sendRedirect(QiNiuFiles.getDownloadFileUrl(saveKey));
-		} catch (IOException e) {
+    		String url=QiNiuFiles.getDownloadFileUrl(saveKey);
+    		QiNiuFiles.download(url,response);
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
     	return msg;

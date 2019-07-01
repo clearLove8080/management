@@ -27,11 +27,15 @@ public class CheckController {
 		return "尊敬的用户,此邮件仅为验证邮件!";
 	}
 	
-	@RequestMapping(value="registerCode",method=RequestMethod.GET)
+	@RequestMapping(value="sendCode",method=RequestMethod.GET)
 	@ResponseBody
-	public String sendCode(String email) {
-		String url=PasswordUtil.Base64Encode(email);
-		MailUtil.sendTextMail(email, "");
+	public String sendCode(String code) {
+		String url=PasswordUtil.Base64Encode(code);
+		try {
+			MailUtil.sendTextMail(code, "<a href=\"http://www.vculturev.xyz?code="+code+"\">尊敬的用户,此邮件仅为验证邮件!</a>");
+		} catch (Exception e) {
+			
+		}
 		return null;
 	}
 }

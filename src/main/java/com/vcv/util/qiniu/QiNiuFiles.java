@@ -1,8 +1,17 @@
 package com.vcv.util.qiniu;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +26,10 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import com.vcv.util.Constants;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 
 public class QiNiuFiles {
 	public static String accessKey="cvpOGP_sMVV-LmWocB6Fl03JEnw8CVRWfIIClHrK";
@@ -110,11 +123,12 @@ public class QiNiuFiles {
 	public static String getDownloadFileUrl(String fileName) {
 		String domainOfBucket = Constants.QINIU_URL.getValue();
 		try {
-			fileName=new String(fileName.getBytes("GBK"),"iso-8859-1");
-		} catch (UnsupportedEncodingException e) {
+			fileName=new String(fileName);
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 		String finalUrl = String.format("%s/%s", domainOfBucket, fileName);
+		//download(finalUrl,"F:\\test\\save");
 		System.out.println(finalUrl);
 		return finalUrl;
 	}
@@ -122,6 +136,111 @@ public class QiNiuFiles {
 	public static void main(String[] args) {
 	   uploadFileByPath("F:\\3.png"); 
 	   System.out.println("----------------------------------------------------------------");
-	   getDownloadFileUrl("JAVA并发编程实战.pdf");
+	   String url=  getDownloadFileUrl("JAVA并发编程实战.pdf");
+	   download(url,"C:\\Users\\Administrator\\Downloads\\");
 	}
+	
+	
+	 /**
+	   * 通过发送http get 请求获取文件资源
+	   *
+	   * @param url
+	   * @param filepath
+	   * @return
+	   */
+	  private static void download(String url, String filepath) {
+	    OkHttpClient client = new OkHttpClient();
+	    System.out.println(url);
+	    Request req = new Request.Builder().url(url).build();
+	    okhttp3.Response resp = null;
+	    try {
+	      resp = client.newCall(req).execute();
+	      System.out.println(resp.isSuccessful());
+	      if (resp.isSuccessful()) {
+	        ResponseBody body = resp.body();
+	        InputStream is = body.byteStream();
+	        byte[] data = readInputStream(is);
+	        //判断文件夹是否存在，不存在则创建
+	        File file = new File(filepath);
+	        if (!file.exists() && !file.isDirectory()) {
+	          System.out.println("===文件夹不存在===创建====");
+	          file.mkdir();
+	        }
+	        File imgFile = new File(filepath + "JAVA并发编程实战.pdf");
+	        FileOutputStream fops = new FileOutputStream(imgFile);
+	        fops.write(data);
+	        fops.close();
+	      }
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	      System.out.println("Unexpected code " + resp);
+	    }
+	  }
+	  
+	  /**
+	   * 读取字节输入流内容
+	   *
+	   * @param is
+	   * @return
+	   */
+	  private static byte[] readInputStream(InputStream is) {
+	    ByteArrayOutputStream writer = new ByteArrayOutputStream();
+	    byte[] buff = new byte[1024 * 2];
+	    int len = 0;
+	    try {
+	      while ((len = is.read(buff)) != -1) {
+	        writer.write(buff, 0, len);
+	      }
+	      is.close();
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	    }
+	    return writer.toByteArray();
+	  }
+	  
+	  public static  void download(String url, HttpServletResponse response) {
+		  OkHttpClient client = new OkHttpClient();
+		    System.out.println(url);
+		    Request req = new Request.Builder().url(url).build();
+		    okhttp3.Response resp = null;
+		  // String fileName = path.substring(path.lastIndexOf("/") + 1);
+	      InputStream in = null;
+	      BufferedOutputStream out = null;
+	      try {
+	    	  resp = client.newCall(req).execute();
+		      System.out.println(resp.isSuccessful());
+		      if (resp.isSuccessful()) {
+		          ResponseBody body = resp.body();
+		          in = body.byteStream();
+		          response.reset();
+		          response.setHeader("Accept-Ranges", "bytes");
+		          response.setHeader("Pragma", "no-cache");
+		          response.setHeader("Cache-Control", "no-cache");
+		          response.setDateHeader("Expires", 0);
+		          out = new BufferedOutputStream(response.getOutputStream());
+		          byte[] buffer = new byte[16384];
+		          int len;
+		          while ((len = in.read(buffer)) > 0) {
+		              out.write(buffer, 0, len);
+		          }
+		          out.flush();
+		      }
+	          logger.debug("下载文件【成功】：url=" + url);
+	      } catch (FileNotFoundException var17) {
+	          logger.debug("下载文件【文件不存在】：url=" + url);
+	      } catch (Throwable var18) {
+	          logger.error("下载文件【失败】：url=" + url, var18);
+	      } finally {
+	          try {
+	              if (in != null) {
+	                  in.close();
+	              }
+	              if (out != null) {
+	                  out.close();
+	              }
+	          } catch (IOException var16) {
+	              logger.error("关闭文件【失败】：url=" + url, var16);
+	          }
+	      }
+	  }
 }	

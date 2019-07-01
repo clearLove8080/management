@@ -28,7 +28,7 @@ public class MailUtil {
      
     public static void main(String[] args) throws Exception {
     	
-    	sendTextMail("564701561@qq.com","!!!!!");
+    	sendTextMail("564701561@qq.com","<a href=\"http://www.vculturev.xyz?code="+"564701561@qq.com"+"\">尊敬的用户,此邮件仅为验证邮件!</a>");
     }
     public static void sendTextMail(String	recipientAddress,String checkUrl) {
     	 //1、连接邮件服务器的参数配置
