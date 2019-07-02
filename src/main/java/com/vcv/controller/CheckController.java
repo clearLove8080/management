@@ -1,5 +1,9 @@
 package com.vcv.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +16,9 @@ import com.vcv.util.PasswordUtil;
 
 @Controller
 @RequestMapping("check")
-public class CheckController {
+public class CheckController extends BaseController {
+	private static final Logger logger = LoggerFactory.getLogger(CheckController.class);
+
 	@Autowired
     private RedisService redisService;
 	@RequestMapping(value="registerCode",method=RequestMethod.GET)
@@ -23,19 +29,21 @@ public class CheckController {
 		String value=redisService.getValue(realEmail);
 		if(value==null) {
 			redisService.setValue(email, "open", 1800);
+			logger.info("将email："+email+"设置到redis中");
 		}
-		return "尊敬的用户,此邮件仅为验证邮件!";
+		return "尊敬的用户,恭喜你,验证成功哦!";
 	}
 	
-	@RequestMapping(value="sendCode",method=RequestMethod.GET)
+	@RequestMapping(value="sendCode",method=RequestMethod.POST)
 	@ResponseBody
-	public String sendCode(String code) {
+	public String sendCode(HttpServletRequest request) {
+		String code=getFormData(request).get("code");
 		String url=PasswordUtil.Base64Encode(code);
 		try {
-			MailUtil.sendTextMail(code, "<a href=\"http://www.vculturev.xyz?code="+code+"\">尊敬的用户,此邮件仅为验证邮件!</a>");
+			MailUtil.sendTextMail(code, "<a href=\"http://203.195.184.232/check/registerCode?email="+code+"\">尊敬的用户,此邮件仅为验证邮件!</a>");
 		} catch (Exception e) {
-			
+			logger.error("邮件发送异常，错误信息为："+e.getMessage());
 		}
-		return null;
+		return "success";
 	}
 }

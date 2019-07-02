@@ -37,7 +37,7 @@
                     <input type="password" class="form-control" placeholder="password" name="password" required=""/>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="email" name="email" required=""/>
+                    <input type="email" class="form-control" placeholder="email" id="email"	name="email" required=""/>
                 </div>
                 <div class="form-group" style="width:36%">
                     <input type="button" class="btn btn-primary block full-width m-b" id="emailBtn" value="点击获取邮件"/>
@@ -75,6 +75,26 @@
     <!--</script>-->
 
     <script th:inline="javascript">
+    /* <![CDATA[ */ 
+    	
+    	$("#emailBtn").click(function(){
+    		$.ajax({  
+		        type : "POST",  
+		        url : "/check/sendCode",
+		        data : {'code':$("#email").val()},
+		        async: false,  
+		        cache: false,  
+		        success : function(data) {  
+		            if(data==null){
+		            	alert('系统错误！');
+		            } else if(data=='success'){
+		            	alert('邮件发送成功,请查收邮件!')
+		            }
+		        }  
+		});  
+		})
+		
+		
         var error = [[${error}]];
         $(document).ready(function () {
             if(error!=null){
@@ -88,7 +108,7 @@
                 radioClass: 'iradio_square-green',
             });
         });
-
+        /*]]>*/
     </script>
 </body>
 

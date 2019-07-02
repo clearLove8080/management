@@ -47,9 +47,7 @@ public class AuthorityFilter implements Filter {
 		whiteList.add("/error/405");
 		whiteList.add("/error/408");
 		whiteList.add("/error/500");
-
-		whiteList.add("/index/lockscreen");
-		whiteList.add("/index/getShowData");
+		whiteList.add("/user/login");
 	}
 
 	private boolean isNeedAuth(String reqURI) {
@@ -92,7 +90,7 @@ public class AuthorityFilter implements Filter {
 		}
 		if (isLogin(request)) {// 已登录
 			if ("/login".equals(reqURI)) {
-				response.sendRedirect(request.getContextPath() + "/index");
+				response.sendRedirect(request.getContextPath() + "/user/dashboard");
 			}
 			else {
 
@@ -119,7 +117,7 @@ public class AuthorityFilter implements Filter {
 						response.setHeader("sessionstatus", "TIMEOUT");
 					}
 				} else {
-					response.sendRedirect(request.getContextPath() + "/login");
+					response.sendRedirect(request.getContextPath() + "/user/login");
 				}
 			} else {
 				filterChain.doFilter(request, response);

@@ -90,7 +90,7 @@ public class MailUtil {
          */
         msg.setRecipient(MimeMessage.RecipientType.TO,new InternetAddress(recipientAddress));
         //设置邮件主题
-        msg.setSubject("邮件主题","UTF-8");
+        msg.setSubject("邮箱验证","UTF-8");
         //设置邮件正文
         msg.setContent(checkUrl, "text/html;charset=UTF-8");
         //设置邮件的发送时间,默认立即发送
