@@ -69,11 +69,11 @@
                                 <div class="hr-line-dashed"></div>
                                  <input id="id" name="id" readonly="readonoly" type="hidden" class="form-control" th:value="${file.id}"/>
 
-                                <div class="form-group"><label class="col-sm-2 control-label">书本名称：</label>
+                                 <!-- <div class="form-group"><label class="col-sm-2 control-label">书本名称：</label>
                                     <div class="col-sm-10">
                                         <input id="title" name="title" type="text" class="form-control" th:value="${file.title}"/>
                                     </div>
-                                </div>
+                                </div>   -->
 
                                 <div class="hr-line-dashed"></div>
 
@@ -85,12 +85,12 @@
 
                                 <div class="hr-line-dashed"></div>
 
-                                <div id="fileCell" class="form-group"><label class="col-sm-2 control-label">书本内容：</label>
+                                <!-- <div id="fileCell" class="form-group"><label class="col-sm-2 control-label">书本内容：</label>
                                     <div class="col-sm-10">
                                         <input   type="text"  height="250px" width="200px" th:value="${file.title}" />
                                         <button id="fileCellBtn" type="button" class="btn btn-white btn-sm">&nbsp;&nbsp;&nbsp;&nbsp;修改&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div id="inputCell" class="form-group"><label class="col-sm-2 control-label">书本内容：</label>
                                     <div class="col-sm-10">
@@ -98,7 +98,7 @@
                                     </div>
                                 </div>
 
-                                <div class="hr-line-dashed"></div>
+                              <!--   <div class="hr-line-dashed"></div>
 
                                 <div class="form-group"><label class="col-sm-2 control-label">卖点：</label>
                                     <div class="col-sm-10">
@@ -120,7 +120,7 @@
                                     <div class="col-sm-10">
                                         <input id="num" name="num" type="text" class="form-control" th:value="${file.num}"/>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="hr-line-dashed"></div>
                                 <div class="form-group">
@@ -200,34 +200,40 @@
 		})
         //提交
         $("#submitButton").click(function(){
-            if($("#title").val() == ""){
+            /* if($("#title").val() == ""){
                 toastr.error('请输入商品标题','提示');
                 return;
-            }
+            } */
             if($("#category").val() == 0){
                 toastr.error('请选择商品分类','提示');
                 return;
             }
-            if($("#price").val() == 0){
+            var objFile = document.getElementById("file");
+            if(objFile.value == "") {
+                alert("不能空")
+            }
+        
+            console.log(objFile.files[0].size); // 文件字节数
+           /*  if($("#price").val() == 0){
                 toastr.error('请输入商品价格','提示');
                 return;
             }
             if($("#num").val() == 0){
                 toastr.error('请输入库存数量','提示');
                 return;
-            }
+            } */
            //$("#formTag").submit(); 
-            var form = $('#formTag');  
+            var form = $('#formTag'); 
             debugger
 			var formdata = new FormData(form[0]);   
 			$.ajax({  
 		        type : "POST",  
 		        url : "/user/fileEdit",
 		        data : formdata,
-		        async: false,  
-		        cache: false,  
-		        contentType: false,  
-		        processData: false,
+		        dataType: 'JSON',
+		        cache: false,
+		        processData: false,                // jQuery不要去处理发送的数据
+		        contentType: false,  				// jQuery不要去设置Content-Type请求头
 		        success : function(data) {  
 		            if(data==null){
 		            	alert('系统错误！');

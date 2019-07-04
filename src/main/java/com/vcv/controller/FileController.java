@@ -11,6 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.mongodb.gridfs.GridFSDBFile;
@@ -59,6 +63,7 @@ import com.vcv.util.qiniu.QiNiuFiles;
 @Controller
 public class FileController extends BaseController{
 	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	public static final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()<<1);
 
     @Autowired
     private FileMapper fileMapper;
@@ -158,10 +163,10 @@ public class FileController extends BaseController{
         model.addAttribute("file", file);
         return "file/fileEdit";
     }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     @PostMapping("/user/fileEdit")
     @ResponseBody
-    public ResObject fileEditPost(Model model, HttpServletRequest request, @RequestParam("file") CommonsMultipartFile file, LearningFile lfile, HttpSession httpSession) {
+    public ResObject fileEditPost(Model model, MultipartHttpServletRequest  request, @RequestParam("file") CommonsMultipartFile file, LearningFile lfile, HttpSession httpSession) {
     	ResObject result=new ResObject().successRes();
     	User user =(User) RequestContextHolderUtil.getSession().getAttribute("user");
     	if(user==null) {
@@ -185,15 +190,22 @@ public class FileController extends BaseController{
     		result.setFlag(false);
     		return result;
     	}
-    	Map<String,Object> data=fileService.uploadFile2Qiniu(file,lfile); 
-    	//设置参数并且保存file
-    	if("success".equals(data.get("result"))) {
-    		data=fileService.saveFile((LearningFile)data.get("lfile")); 
-    	}
-    	if("success".equals(data.get("result"))) {
-    		result.setFlag(true);
-    		result.setResMsg(data.get("msg").toString());;
-    	}
+    	Thread read=new Thread(new Runnable() {
+			@Override
+			public void run() {
+				logger.info("多线程开始上传文件:"+file.getOriginalFilename());
+				/*Map<String,Object> data=fileService.uploadFile2Qiniu(file,lfile); 
+				//设置参数并且保存file
+				if("success".equals(data.get("result"))) {
+					data=fileService.saveFile((LearningFile)data.get("lfile")); 
+				}
+				if("success".equals(data.get("result"))) {
+					result.setFlag(true);
+					result.setResMsg(data.get("msg").toString());;
+				}*/
+			};
+		});
+    	read.start();
        // return "redirect:itemManage_0_0_0";
         return result;
     }

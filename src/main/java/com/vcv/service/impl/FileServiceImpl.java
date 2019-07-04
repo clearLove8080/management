@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +119,7 @@ public class FileServiceImpl implements FileService{
 		String saveKey=QiNiuFiles.uploadFileByStream(file,fileName);
 		Map<String,Object>result=Maps.newHashMap();
 		if(saveKey!=null) {
+			lfile.setTitle(fileName);
 			lfile.setSaveKey(saveKey);
 			result.put("result", "success");
 	        result.put("msg", "上传文件成功");

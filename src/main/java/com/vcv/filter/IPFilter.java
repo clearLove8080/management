@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.JsonObject;
 import com.vcv.redis.RedisService;
-@Component
+//@Component
 public class IPFilter implements Filter {
 	private FilterConfig config;
 	@Autowired

@@ -62,13 +62,25 @@
 <!--                                             <option th:each="ic : ${itemCategoryList}" th:value="${ic.id}" th:text="${ic.name}" th:selected="${ic.id==file.cid}">分类</option>
  -->                                        </select>
                                     </div>
-
-                                    <!-- <div class="col-sm-2 m-b-xs">
+									
+									<div class="media">
+									  <div class="media-left">
+									    <a href="#">
+									      <img class="media-object" src="..." alt="..."	/>
+									    </a>
+									  </div>
+									  <div class="media-body">
+									    <h4 class="media-heading">Media heading</h4>
+									    ...
+									  </div>
+									</div>
+									
+                                    <div class="col-sm-2 m-b-xs">
                                         <input id="minPrice" name="minPrice" class="form-control" type="text" th:value="${learningFile.minPrice}" placeholder="最低价格" />
                                     </div>
                                     <div class="col-sm-2 m-b-xs">
                                         <input id="maxPrice" name="maxPrice"  class="form-control" type="text" th:value="${learningFile.maxPrice}" placeholder="最高价格"/>
-                                    </div> -->
+                                    </div>
                                     <div class="col-sm-2 m-b-xs">
                                         <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-search"></i>&nbsp;&nbsp;&nbsp;&nbsp;<strong>搜索</strong></button>
                                     </div>
@@ -106,6 +118,8 @@
                                         <th width="5%">ID</th>
                                         <th width="39%">文件名称</th>
                                         <th width="8%">分类</th>
+                                        <th width="8%">价格</th>
+                                        <th width="15%">库存数量</th>
                                         <th width="15%">更新时间</th>
                                         <!--<th width="10%">推荐状态</th>-->
                                         <th>操作</th>
@@ -116,6 +130,8 @@
                                         <td th:text="${file.id}">Onions</td>
                                         <td th:text="${file.title}">Onions</td>
                                         <td th:text="${file.categoryName}">Onions</td>
+                                        <td th:text="${file.price}">Onions</td>
+                                        <td th:text="${file.num}">Onions</td>
                                         <td th:text="${file.updatedStr}">Onions</td>
                                      
                                         <td>

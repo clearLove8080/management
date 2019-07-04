@@ -41,7 +41,10 @@ public class UserController {
 
     @Value("${spring.mail.username}")
     private String Sender; //读取配置文件中的参数
-
+    
+    @Value("${msg}")
+	private String msg;
+    
     /**
      * 登录跳转
      *

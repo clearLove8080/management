@@ -20,7 +20,7 @@ public enum Constants {
 	PRO_SAVE_PATH("/home/admin/files/save/"),
 	LOGIN_TICKET("login_ticket"),
 	QINIU_URL("http://ptnfl8sld.bkt.clouddn.com"),
-	FILE_SIZE("31457280");
+	FILE_SIZE("61457280");
 	
 	private String value;
 	private Constants(String value) {
